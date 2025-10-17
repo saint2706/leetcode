@@ -1,5 +1,8 @@
 class Solution:
     def findSubstring(self, s: str, words: list[str]) -> list[int]:
+        if not s or not words:
+            return []
+
         n = len(s)
         word_len = len(words[0])
         total_len = len(words) * word_len
@@ -8,17 +11,33 @@ class Solution:
             word_freq[word] = word_freq.get(word, 0) + 1
 
         result = []
-        for i in range(n - total_len + 1):
-            window = s[i : i + total_len]
-            freq = {}
-            for j in range(0, total_len, word_len):
-                word = window[j : j + word_len]
-                if word not in word_freq:
-                    break
-                freq[word] = freq.get(word, 0) + 1
-                if freq[word] > word_freq.get(word, 0):
-                    break
-            else:
-                result.append(i)
+        for offset in range(word_len):
+            left = offset
+            seen = {}
+            matches = 0
+
+            for right in range(offset, n - word_len + 1, word_len):
+                word = s[right : right + word_len]
+
+                if word in word_freq:
+                    seen[word] = seen.get(word, 0) + 1
+                    matches += 1
+
+                    while seen[word] > word_freq[word]:
+                        left_word = s[left : left + word_len]
+                        seen[left_word] -= 1
+                        left += word_len
+                        matches -= 1
+
+                    if matches == len(words):
+                        result.append(left)
+                        left_word = s[left : left + word_len]
+                        seen[left_word] -= 1
+                        left += word_len
+                        matches -= 1
+                else:
+                    seen.clear()
+                    matches = 0
+                    left = right + word_len
 
         return result
