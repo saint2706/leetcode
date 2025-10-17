@@ -1,9 +1,16 @@
 class Solution:
     def plusOne(self, digits: list[int]) -> list[int]:
-        num = int("".join(list(map(str, digits))))
-        num += 1
-        num2 = []
-        for i in range(len(str(num))):
-            num2.append(num % 10)
-            num //= 10
-        return num2[::-1]
+        carry = 1
+
+        for idx in range(len(digits) - 1, -1, -1):
+            total = digits[idx] + carry
+            digits[idx] = total % 10
+            carry = total // 10
+
+            if carry == 0:
+                break
+
+        if carry:
+            digits.insert(0, carry)
+
+        return digits
