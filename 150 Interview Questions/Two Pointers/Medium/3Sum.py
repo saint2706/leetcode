@@ -5,6 +5,8 @@ class Solution:
         triplets = []
 
         for i in range(n):
+            if nums[i] > 0:
+                break
             # Skip duplicate values of nums[i]
             if i > 0 and nums[i] == nums[i - 1]:
                 continue
